@@ -23,6 +23,17 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
+        await client.connect();
+        const db = client.db("plateShare");
+        const modelsCollection = db.collection("foods");
+
+        app.get('/foods',  async (req, res) => {
+           const result = await modelsCollection.find().toArray();
+            res.send(result);
+        });
+
+
+
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         // Send a ping to confirm a successful connection
