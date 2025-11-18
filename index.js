@@ -107,6 +107,20 @@ async function run() {
 
 
 
+        app.get("/requests", async (req, res) => {
+            try {
+                const result = await requestsCollection.find().toArray();
+                res.send(result);
+            } catch (err) {
+                console.error("Error fetching requests:", err);
+                res.status(500).json({ message: "Failed to fetch requests" });
+            }
+        });
+
+
+
+
+
 
 
         // Connect the client to the server	(optional starting in v4.7)
