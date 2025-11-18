@@ -1,5 +1,5 @@
 const express = require('express')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const cors = require('cors')
 const port = 3000
@@ -44,6 +44,38 @@ async function run() {
                 insertedId: result.insertedId,
             });
         });
+
+
+
+
+        app.put("/foods/:id", async (req, res) => {
+            try {
+                const id = req.params.id;
+                const updatedFood = req.body;
+
+                if (!ObjectId.isValid(id)) {
+                    return res.status(400).json({ message: "Invalid ID format" });
+                }
+
+                const result = await modelsCollection.updateOne(
+                    { _id: new ObjectId(id) },
+                    { $set: updatedFood }
+                );
+
+                if (result.matchedCount === 0) {
+                    return res.status(404).json({ message: "Food not found" });
+                }
+
+                res.json({
+                    message: "Food updated successfully",
+                    updatedId: id,
+                });
+            } catch (err) {
+                console.error("Error updating food:", err);
+                res.status(500).json({ message: "Error updating food" });
+            }
+        });
+
 
 
 
