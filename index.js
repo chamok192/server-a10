@@ -177,6 +177,37 @@ async function run() {
             }
         });
 
+        app.put("/requests/:id", async (req, res) => {
+            try {
+                const id = req.params.id;
+                const updatedData = req.body;
+
+                if (!ObjectId.isValid(id)) {
+                    return res.status(400).json({ message: "Invalid request ID" });
+                }
+
+                const result = await requestsCollection.updateOne(
+                    { _id: new ObjectId(id) },
+                    { $set: updatedData }
+                );
+
+                if (result.matchedCount === 0) {
+                    return res.status(404).json({ message: "Request not found" });
+                }
+
+                res.json({
+                    message: "Request updated successfully",
+                    updatedId: id,
+                });
+            } catch (error) {
+                console.error("Error updating request:", error);
+                res.status(500).json({ message: "Error updating request" });
+            }
+        });
+
+        
+
+       
         
 
         // Send a ping to confirm a successful connection
