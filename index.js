@@ -78,6 +78,35 @@ async function run() {
 
 
 
+        app.delete("/foods/:id", async (req, res) => {
+            try {
+                const id = req.params.id;
+
+                if (!ObjectId.isValid(id)) {
+                    return res.status(400).json({ message: "Invalid ID format" });
+                }
+
+                const result = await modelsCollection.deleteOne({
+                    _id: new ObjectId(id),
+                });
+
+                if (result.deletedCount === 0) {
+                    return res.status(404).json({ message: "Food not found" });
+                }
+
+                res.json({
+                    message: "Food deleted successfully",
+                    deletedId: id,
+                });
+            } catch (error) {
+                console.error("Error deleting food:", error);
+                res.status(500).json({ message: "Error deleting food" });
+            }
+        });
+
+
+
+
 
 
         // Connect the client to the server	(optional starting in v4.7)
