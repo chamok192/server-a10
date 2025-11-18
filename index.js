@@ -33,6 +33,20 @@ async function run() {
         });
 
 
+        app.post("/foods", async (req, res) => {
+            const food = req.body;
+            console.log("Received POST:", food);
+
+            const result = await modelsCollection.insertOne(food);
+
+            res.json({
+                message: "Food stored successfully",
+                insertedId: result.insertedId,
+            });
+        });
+
+
+
 
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
