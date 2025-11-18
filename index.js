@@ -205,10 +205,31 @@ async function run() {
             }
         });
 
-        
+        app.delete("/requests/:id", async (req, res) => {
+            try {
+                const id = req.params.id;
 
-       
-        
+                if (!ObjectId.isValid(id)) {
+                    return res.status(400).json({ message: "Invalid request ID" });
+                }
+
+                const result = await requestsCollection.deleteOne({
+                    _id: new ObjectId(id),
+                });
+
+                if (result.deletedCount === 0) {
+                    return res.status(404).json({ message: "Request not found" });
+                }
+
+                res.json({
+                    message: "Request deleted successfully",
+                    deletedId: id,
+                });
+            } catch (error) {
+                console.error("Error deleting request:", error);
+                res.status(500).json({ message: "Error deleting request" });
+            }
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
